@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Terrains de Football</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/public/index}">
+            <i class="bi bi-dribbble me-2"></i>Gestion des Terrains
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" th:href="@{/public/index}">
+                        <i class="bi bi-house-door me-1"></i>Accueil
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/public/terrains}">
+                        <i class="bi bi-geo-alt me-1"></i>Terrains
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/public/reservations}">
+                        <i class="bi bi-calendar-check me-1"></i>Réservations
+                    </a>
+                </li>
+            </ul>
+            <div class="d-flex">
+                <a th:href="@{/login}" class="btn btn-outline-light me-2">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Connexion
+                </a>
+                <a th:href="@{/register}" class="btn btn-primary hover-lift">
+                    <i class="bi bi-person-plus me-1"></i>Inscription
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<section class="hero text-center" style="background-image: url('https://images.unsplash.com/photo-1508098682722-e99c643e7f0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');">
+    <div class="container fade-in">
+        <h1 class="mb-4">Bienvenue sur la plateforme de gestion des terrains de football</h1>
+        <p class="lead mb-4">Réservez facilement votre terrain de football pour vos matchs et entraînements</p>
+        <a th:href="@{/public/terrains}" class="btn btn-primary btn-lg hover-lift">
+            <i class="bi bi-search me-2"></i>Voir les terrains disponibles
+        </a>
+    </div>
+</section>
+
+<section class="py-5 content-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <i class="bi bi-geo-alt fs-1 text-primary mb-3"></i>
+                        <h3>Terrains dans plusieurs villes</h3>
+                        <p>Trouvez des terrains de football dans différentes villes selon vos besoins.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-check fs-1 text-primary mb-3"></i>
+                        <h3>Réservation facile</h3>
+                        <p>Réservez rapidement et facilement votre terrain préféré pour vos matchs.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 hover-lift">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people fs-1 text-primary mb-3"></i>
+                        <h3>Organisez des compétitions</h3>
+                        <p>Créez des compétitions et invitez d'autres équipes à participer.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-gradient-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Prêt à réserver votre terrain?</h2>
+        <p class="lead mb-4">Rejoignez notre communauté et commencez à profiter de nos services dès aujourd'hui.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a th:href="@{/register}" class="btn btn-light hover-lift">
+                <i class="bi bi-person-plus me-2"></i>Créer un compte
+            </a>
+            <a th:href="@{/public/terrains}" class="btn btn-outline-light hover-lift">
+                <i class="bi bi-search me-2"></i>Explorer les terrains
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer class="py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5 class="text-white mb-3">Gestion des Terrains</h5>
+                <p class="text-white-50">La meilleure plateforme pour réserver des terrains de football.</p>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5 class="text-white mb-3">Liens rapides</h5>
+                <ul class="list-unstyled">
+                    <li><a th:href="@{/public/index}" class="text-white-50">Accueil</a></li>
+                    <li><a th:href="@{/public/terrains}" class="text-white-50">Terrains</a></li>
+                    <li><a th:href="@{/public/reservations}" class="text-white-50">Réservations</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5 class="text-white mb-3">Contact</h5>
+                <p class="text-white-50">
+                    <i class="bi bi-envelope me-2"></i>contact@gestionterrains.com<br>
+                    <i class="bi bi-telephone me-2"></i>+212 555-123-4567
+                </p>
+            </div>
+        </div>
+        <hr class="mt-4 mb-4" style="border-color: rgba(255,255,255,0.1);">
+        <p class="text-center text-white-50 mb-0">© 2025 Gestion des Terrains de Football. Tous droits réservés.</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gérer Réservation | Administration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="bg-dark text-white" style="width: 280px; min-height: 100vh; position: fixed;">
+        <div class="d-flex align-items-center p-3 border-bottom border-secondary">
+            <i class="bi bi-dribbble fs-4 me-2 text-primary"></i>
+            <h5 class="mb-0">Gestion Terrains</h5>
+        </div>
+        <div class="p-3 border-bottom border-secondary">
+            <div class="d-flex align-items-center">
+                <div class="bg-primary text-white rounded-circle p-2 me-3">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0">Admin</h6>
+                    <small class="text-muted">Administrateur</small>
+                </div>
+            </div>
+        </div>
+        <ul class="nav flex-column p-3">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white-50" th:href="@{/admin}">
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    Tableau de bord
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white-50" th:href="@{/admin/terrains}">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    Terrains
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white-50" th:href="@{/admin/villes}">
+                    <i class="bi bi-building me-2"></i>
+                    Villes
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white-50" th:href="@{/admin/utilisateurs}">
+                    <i class="bi bi-people me-2"></i>
+                    Utilisateurs
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white active" th:href="@{/admin/reservations}">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    Réservations
+                </a>
+            </li>
+            <li class="nav-item mt-4">
+                <a class="nav-link text-danger" th:href="@{/logout}">
+                    <i class="bi bi-box-arrow-left me-2"></i>
+                    Déconnexion
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main content -->
+    <div style="margin-left: 280px; width: calc(100% - 280px);">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+            <div class="container-fluid">
+                <h5 class="mb-0">Gérer Réservation</h5>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <div class="container-fluid p-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow rounded">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-calendar-check me-2"></i>
+                                <span th:if="${reservation.id}">Modifier la réservation</span>
+                                <span th:unless="${reservation.id}">Nouvelle réservation</span>
+                            </h5>
+                            <a th:href="@{/admin/reservations}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Retour
+                            </a>
+                        </div>
+                        <div class="card-body p-4">
+                            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                <span th:text="${successMessage}">Réservation enregistrée avec succès!</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                            </div>
+
+                            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <span th:text="${errorMessage}">Une erreur s'est produite!</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                            </div>
+
+                            <form th:action="@{'/admin/reservations'}" th:object="${reservation}" method="post">
+                                <input type="hidden" th:field="*{id}" />
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="utilisateur" class="form-label">Utilisateur <span class="text-danger">*</span></label>
+                                        <select th:field="*{utilisateur}" class="form-select" id="utilisateur" required>
+                                            <option value="">-- Sélectionner un utilisateur --</option>
+                                            <option th:each="user : ${utilisateurs}"
+                                                    th:value="${user.id}"
+                                                    th:text="${user.nom + ' ' + user.prenom}">
+                                                Nom Utilisateur
+                                            </option>
+                                        </select>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('utilisateur')}" th:errors="*{utilisateur}">
+                                            Veuillez sélectionner un utilisateur.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="terrain" class="form-label">Terrain <span class="text-danger">*</span></label>
+                                        <select th:field="*{terrain}" class="form-select" id="terrain" required>
+                                            <option value="">-- Sélectionner un terrain --</option>
+                                            <option th:each="field : ${terrains}"
+                                                    th:value="${field.id}"
+                                                    th:text="${field.nom + ' (' + field.ville.nom + ')'}">
+                                                Nom du Terrain
+                                            </option>
+                                        </select>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('terrain')}" th:errors="*{terrain}">
+                                            Veuillez sélectionner un terrain.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="dateDebut" class="form-label">Date de réservation <span class="text-danger">*</span></label>
+                                        <input type="datetime-local" th:field="*{dateDebut}" class="form-control" id="dateDebut" required />
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dateReservation')}" th:errors="*{dateDebut}">
+                                            La date est invalide.
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="dateFin" class="form-label">Date de réservation <span class="text-danger">*</span></label>
+                                            <input type="datetime-local" th:field="*{dateFin}" class="form-control" id="dateFin" required />
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('dateReservation')}" th:errors="*{dateFin}">
+                                                La date est invalide.
+                                            </div>
+                                    </div>
+<!--                                    <div class="col-md-6">-->
+<!--                                        <label for="duree" class="form-label">Durée (heures) <span class="text-danger">*</span></label>-->
+<!--                                        <input type="number" th:field="*{duree}" class="form-control" id="duree" min="1" max="5" required />-->
+<!--                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('duree')}" th:errors="*{duree}">-->
+<!--                                            La durée doit être entre 1 et 5 heures.-->
+<!--                                        </div>-->
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="statut" class="form-label">Statut <span class="text-danger">*</span></label>
+                                        <select th:field="*{statut}" class="form-select" id="statut" required>
+                                            <option value="EN_ATTENTE">En attente</option>
+                                            <option value="CONFIRMEE">Confirmée</option>
+                                            <option value="ANNULEE">Annulée</option>
+                                        </select>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('statut')}" th:errors="*{statut}">
+                                            Veuillez sélectionner un statut.
+                                        </div>
+                                    </div>
+<!--                                    <div class="col-md-6">-->
+<!--                                        <label for="montant" class="form-label">Montant (DH) <span class="text-danger">*</span></label>-->
+<!--                                        <input type="number" th:field="*{montant}" class="form-control" id="montant" min="0" step="0.01" required />-->
+<!--                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('montant')}" th:errors="*{montant}">-->
+<!--                                            Le montant est invalide.-->
+<!--                                        </div>-->
+                                    </div>
+                                
+
+<!--                                <div class="mb-3">-->
+<!--                                    <label for="commentaire" class="form-label">Commentaire</label>-->
+<!--                                    <textarea th:field="*{}" class="form-control" id="commentaire" rows="3"></textarea>-->
+<!--                                </div>-->
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a th:href="@{/admin/reservations}" class="btn btn-light me-md-2">Annuler</a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-save me-1"></i>Enregistrer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

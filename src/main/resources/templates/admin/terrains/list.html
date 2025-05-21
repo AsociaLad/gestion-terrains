@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout}">
+<head>
+    <title>Gestion des Terrains</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Liste des Terrains</h2>
+        <a th:href="@{/admin/terrains/new}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Nouveau Terrain
+        </a>
+    </div>
+
+    <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${success}">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${error}">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Rechercher un terrain...">
+                        <button class="btn btn-outline-secondary" type="button">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <select class="form-select" id="filter-ville">
+                        <option value="">Toutes les villes</option>
+                        <option th:each="ville : ${villes}" th:value="${ville.id}" th:text="${ville.nom}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Ville</th>
+                            <th>Adresse</th>
+                            <th>Type Surface</th>
+                            <th>Capacité</th>
+                            <th>Disponible</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(terrains)}">
+                            <td colspan="8" class="text-center">Aucun terrain trouvé</td>
+                        </tr>
+                        <tr th:each="terrain : ${terrains}">
+                            <td th:text="${terrain.id}">1</td>
+                            <td th:text="${terrain.nom}">Terrain Central</td>
+                            <td th:text="${terrain.ville != null ? terrain.ville.nom : ''}">Paris</td>
+                            <td th:text="${terrain.adresse}">123 Rue du Sport</td>
+                            <td th:text="${terrain.typeSurface}">GAZON_SYNTHETIQUE</td>
+                            <td th:text="${terrain.capacite}">22</td>
+                            <td>
+                                <span th:if="${terrain.estDisponible}" class="badge bg-success">Disponible</span>
+                                <span th:unless="${terrain.estDisponible}" class="badge bg-danger">Non disponible</span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a th:href="@{/admin/terrains/{id}/edit(id=${terrain.id})}" class="btn btn-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                            th:data-bs-id="${terrain.id}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de suppression -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Confirmation de suppression</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir supprimer ce terrain ? Cette action est irréversible.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <form id="deleteForm" th:action="@{/admin/terrains/delete}" method="post">
+                        <input type="hidden" id="terrainId" name="id" value="">
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script layout:fragment="script">
+    // Script pour le modal de suppression
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteModal = document.getElementById('deleteModal');
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', function(event) {
+                var button = event.relatedTarget;
+                var id = button.getAttribute('data-bs-id');
+                document.getElementById('terrainId').value = id;
+            });
+        }
+    });
+</script>
+</body>
+</html>

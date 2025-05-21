@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gérer Utilisateur | Administration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div class="bg-dark text-white" style="width: 280px; min-height: 100vh; position: fixed;">
+        <div class="d-flex align-items-center p-3 border-bottom border-secondary">
+            <i class="bi bi-dribbble fs-4 me-2 text-primary"></i>
+            <h5 class="mb-0">Gestion Terrains</h5>
+        </div>
+        <div class="p-3 border-bottom border-secondary">
+            <div class="d-flex align-items-center">
+                <div class="bg-primary text-white rounded-circle p-2 me-3">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0">Admin</h6>
+                    <small class="text-muted">Administrateur</small>
+                </div>
+            </div>
+        </div>
+        <ul class="nav flex-column p-3">
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white-50" th:href="@{/admin}">
+                    <i class="bi bi-speedometer2 me-2"></i>
+                    Tableau de bord
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white-50" th:href="@{/admin/terrains}">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    Terrains
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white-50" th:href="@{/admin/villes}">
+                    <i class="bi bi-building me-2"></i>
+                    Villes
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white active" th:href="@{/admin/utilisateurs}">
+                    <i class="bi bi-people me-2"></i>
+                    Utilisateurs
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a class="nav-link text-white-50" th:href="@{/admin/reservations}">
+                    <i class="bi bi-calendar-check me-2"></i>
+                    Réservations
+                </a>
+            </li>
+            <li class="nav-item mt-4">
+                <a class="nav-link text-danger" th:href="@{/logout}">
+                    <i class="bi bi-box-arrow-left me-2"></i>
+                    Déconnexion
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main content -->
+    <div style="margin-left: 280px; width: calc(100% - 280px);">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+            <div class="container-fluid">
+                <h5 class="mb-0">Gérer Utilisateur</h5>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <div class="container-fluid p-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow rounded">
+                        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person me-2"></i>
+                                <span th:if="${utilisateur.id}">Modifier l'utilisateur</span>
+                                <span th:unless="${utilisateur.id}">Nouvel utilisateur</span>
+                            </h5>
+                            <a th:href="@{/admin/utilisateurs}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Retour
+                            </a>
+                        </div>
+                        <div class="card-body p-4">
+                            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i>
+                                <span th:text="${successMessage}">Utilisateur enregistré avec succès!</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                            </div>
+
+                            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <span th:text="${errorMessage}">Une erreur s'est produite!</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                            </div>
+
+                            <form th:action="@{'/admin/utilisateurs/save'}" th:object="${utilisateur}" method="post">
+                                <input type="hidden" th:field="*{id}" />
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="nom" class="form-label">Nom <span class="text-danger">*</span></label>
+                                        <input type="text" th:field="*{nom}" class="form-control" id="nom" required />
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}">
+                                            Veuillez entrer un nom valide.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="prenom" class="form-label">Prénom <span class="text-danger">*</span></label>
+                                        <input type="text" th:field="*{prenom}" class="form-control" id="prenom" required />
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('prenom')}" th:errors="*{prenom}">
+                                            Veuillez entrer un prénom valide.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                        <input type="email" th:field="*{email}" class="form-control" id="email" required />
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                                            Veuillez entrer un email valide.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="telephone" class="form-label">Téléphone</label>
+                                        <input type="tel" th:field="*{telephone}" class="form-control" id="telephone" />
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('telephone')}" th:errors="*{telephone}">
+                                            Numéro de téléphone invalide.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="password" class="form-label">
+                                            Mot de passe <span class="text-danger" th:unless="${utilisateur.id}">*</span>
+                                            <small class="text-muted" th:if="${utilisateur.id}">(Laisser vide pour conserver l'ancien)</small>
+                                        </label>
+                                        <input type="password" th:field="*{motDePasse}" class="form-control" id="password" th:required="${utilisateur.id == null}" />
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                                            Le mot de passe est invalide.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="role" class="form-label">Rôle <span class="text-danger">*</span></label>
+                                        <select th:field="*{role}" class="form-select" id="role" required>
+                                            <option value="UTILISATEUR">Utilisateur</option>
+                                            <option value="ADMIN">Administrateur</option>
+                                            <option value="COACH">Coach</option>
+                                        </select>
+                                        <div class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">
+                                            Veuillez sélectionner un rôle.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="adresse" class="form-label">Adresse</label>
+                                    <textarea th:field="*{adresse}" class="form-control" id="adresse" rows="2"></textarea>
+                                </div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-save me-1"></i>Enregistrer
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

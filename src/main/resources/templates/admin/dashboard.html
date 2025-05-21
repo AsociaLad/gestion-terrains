@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout}">
+<head>
+    <title>Tableau de bord</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>Tableau de bord administrateur</h2>
+
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Villes</h5>
+                            <h2 class="card-text" th:text="${countVilles}">0</h2>
+                        </div>
+                        <i class="bi bi-geo-alt fs-1"></i>
+                    </div>
+                    <a th:href="@{/admin/villes}" class="text-white">Voir toutes les villes →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Terrains</h5>
+                            <h2 class="card-text" th:text="${countTerrains}">0</h2>
+                        </div>
+                        <i class="bi bi-layers fs-1"></i>
+                    </div>
+                    <a th:href="@{/admin/terrains}" class="text-white">Voir tous les terrains →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Utilisateurs</h5>
+                            <h2 class="card-text" th:text="${countUtilisateurs}">0</h2>
+                        </div>
+                        <i class="bi bi-people fs-1"></i>
+                    </div>
+                    <a th:href="@{/admin/utilisateurs}" class="text-white">Voir tous les utilisateurs →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">Réservations</h5>
+                            <h2 class="card-text" th:text="${countReservations}">0</h2>
+                        </div>
+                        <i class="bi bi-calendar-check fs-1"></i>
+                    </div>
+                    <a th:href="@{/admin/reservations}" class="text-white">Voir toutes les réservations →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Dernières réservations</h5>
+        </div>
+        <div class="card-body">
+            <div th:if="${#lists.isEmpty(dernieresReservations)}" class="alert alert-info">
+                Aucune réservation trouvée
+            </div>
+            <table th:unless="${#lists.isEmpty(dernieresReservations)}" class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Utilisateur</th>
+                    <th>Terrain</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
+                    <th>Statut</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="reservation : ${dernieresReservations}">
+                    <td th:text="${reservation.id}"></td>
+                    <td th:text="${reservation.utilisateur.nom + ' ' + reservation.utilisateur.prenom}"></td>
+                    <td th:text="${reservation.terrain.nom}"></td>
+                    <td th:text="${#temporals.format(reservation.dateDebut, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${#temporals.format(reservation.dateFin, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                                <span th:text="${reservation.statut}"
+                                      th:class="${reservation.statut.name() == 'CONFIRMEE' ? 'badge bg-success' : (reservation.statut.name() == 'ANNULEE' ? 'badge bg-danger' : 'badge bg-warning')}"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Actions rapides</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a th:href="@{/admin/villes/new}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Ajouter une ville
+                        </a>
+                        <a th:href="@{/admin/terrains/new}" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Ajouter un terrain
+                        </a>
+                        <a th:href="@{/admin/utilisateurs/new}" class="btn btn-info">
+                            <i class="bi bi-plus-circle"></i> Ajouter un utilisateur
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Informations système</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Version de l'application
+                            <span class="badge bg-primary">1.0.0</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Version de Spring Boot
+                            <span class="badge bg-primary">3.4.4</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            Base de données
+                            <span class="badge bg-primary">MySQL</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

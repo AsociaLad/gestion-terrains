@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout}">
+<head>
+    <title th:text="${terrain.id} ? 'Modifier un terrain' : 'Nouveau terrain'">Terrain</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 th:text="${terrain.id} ? 'Modifier un terrain' : 'Nouveau terrain'">Terrain</h2>
+        <a th:href="@{/admin/terrains}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Retour
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form th:action="${terrain.id} ? @{/admin/terrains/{id}(id=${terrain.id})} : @{/admin/terrains}" 
+                  th:object="${terrain}" method="post">
+                  
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="nom" class="form-label">Nom <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="nom" th:field="*{nom}" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nom')}" th:errors="*{nom}">
+                            Le nom est obligatoire
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="ville" class="form-label">Ville <span class="text-danger">*</span></label>
+                        <select class="form-select" id="ville" th:field="*{ville}" required>
+                            <option value="">-- Choisir une ville --</option>
+                            <option th:each="v : ${villes}" th:value="${v.id}" th:text="${v.nom}"></option>
+                        </select>
+                        <div class="text-danger" th:if="${villeError}" th:text="${villeError}"></div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="adresse" class="form-label">Adresse <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="adresse" th:field="*{adresse}" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('adresse')}" th:errors="*{adresse}">
+                            L'adresse est obligatoire
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="typeSurface" class="form-label">Type de surface <span class="text-danger">*</span></label>
+                        <select class="form-select" id="typeSurface" th:field="*{typeSurface}" required>
+                            <option value="">-- Choisir un type de surface --</option>
+                            <option th:each="type : ${typesSurface}" th:value="${type}" th:text="${type}"></option>
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('typeSurface')}" th:errors="*{typeSurface}">
+                            Le type de surface est obligatoire
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="capacite" class="form-label">Capacité <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="capacite" th:field="*{capacite}" min="1" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('capacite')}" th:errors="*{capacite}">
+                            La capacité doit être un nombre positif
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="estDisponible" th:field="*{estDisponible}">
+                            <label class="form-check-label" for="estDisponible">
+                                Terrain disponible
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a th:href="@{/admin/terrains}" class="btn btn-light me-md-2">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-2"></i>Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
